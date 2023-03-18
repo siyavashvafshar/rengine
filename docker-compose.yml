@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.3'
 
 services:
   db:
@@ -32,11 +32,11 @@ services:
       - ./web:/usr/src/app
       - github_repos:/usr/src/github
       - wordlist:/usr/src/wordlist
-      - scan_results:/usr/src/scan_results
+      - /var/www/html/media/:/usr/src/scan_results
       - gf_patterns:/root/.gf
       - nuclei_templates:/root/nuclei-templates
       - tool_config:/root/.config
-      - static_volume:/usr/src/app/staticfiles/
+      - /var/www/html/staticfiles/:/usr/src/app/staticfiles/
     environment:
       - DEBUG=0
       - CELERY_BROKER=redis://redis:6379/0
@@ -71,7 +71,7 @@ services:
       - ./web:/usr/src/app
       - github_repos:/usr/src/github
       - wordlist:/usr/src/wordlist
-      - scan_results:/usr/src/scan_results
+      - /var/www/html/media/:/usr/src/scan_results
       - gf_patterns:/root/.gf
       - nuclei_templates:/root/nuclei-templates
       - tool_config:/root/.config
@@ -100,11 +100,11 @@ services:
       - ./web:/usr/src/app
       - github_repos:/usr/src/github
       - wordlist:/usr/src/wordlist
-      - scan_results:/usr/src/scan_results
+      - /var/www/html/media/:/usr/src/scan_results
       - gf_patterns:/root/.gf
       - nuclei_templates:/root/nuclei-templates
       - tool_config:/root/.config
-      - static_volume:/usr/src/app/staticfiles/
+      - /var/www/html/staticfiles/:/usr/src/app/staticfiles/
     ports:
       - "8000:8000"
     depends_on:
@@ -126,30 +126,6 @@ services:
     depends_on:
       - web
 
-  proxy:
-    restart: always
-    image: nginx:alpine
-    ports:
-      - 80:80/tcp
-      - 443:443/tcp
-    depends_on:
-      - web
-      - db
-      - redis
-    secrets:
-      - source: proxy.ca
-        target: /etc/nginx/certs/rengine_chain.pem
-      - source: proxy.cert
-        target: /etc/nginx/certs/rengine.pem
-      - source: proxy.key
-        target: /etc/nginx/certs/rengine_rsa.key
-    volumes:
-      - ./config/nginx/rengine.conf:/etc/nginx/conf.d/rengine.conf:ro
-      - static_volume:/usr/src/app/staticfiles/
-      - scan_results:/usr/src/scan_results
-    networks:
-      - rengine_network
-
 networks:
   rengine_network:
 
@@ -160,13 +136,3 @@ volumes:
   nuclei_templates:
   github_repos:
   wordlist:
-  scan_results:
-  static_volume:
-
-secrets:
-  proxy.ca:
-    file: ./secrets/certs/rengine_chain.pem
-  proxy.key:
-    file: ./secrets/certs/rengine_rsa.key
-  proxy.cert:
-    file: ./secrets/certs/rengine.pem
