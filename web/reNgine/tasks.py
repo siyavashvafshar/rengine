@@ -1010,12 +1010,12 @@ def port_scanning(
 
 	if domain:
 		subdomain_scan_results_file = results_dir + '/sorted_subdomain_collection.txt'
-		naabu_command = 'naabu -list {} -json | sed \'s/{"Port"://g\' | sed \'s/,"Protocol".*}/}/g\' | tee {}'.format(
+		naabu_command = 'naabu -list {} -json -o {}'.format(
 			subdomain_scan_results_file,
 			port_results_file
 		)
 	elif subdomain:
-		naabu_command = 'naabu -host {} -json | sed \'s/{"Port"://g\' | sed \'s/,"Protocol".*}/}/g\' | tee {}'.format(
+		naabu_command = 'naabu -host {} -o {} -json '.format(
 			subdomain,
 			port_results_file
 		)
@@ -1069,7 +1069,7 @@ def port_scanning(
 		lines = port_json_result.readlines()
 		for line in lines:
 			json_st = json.loads(line.strip())
-			port_number = json_st['port']
+			port_number = json_st['port']['Port']
 			ip_address = json_st['ip']
 			host = json_st['host']
 
