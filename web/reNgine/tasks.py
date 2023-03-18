@@ -1004,6 +1004,7 @@ def port_scanning(
 	port_results_file = results_dir + '/' + output_file_name
 
 	domain_name = domain.name if domain else subdomain
+	domain_name = domain.name if domain else subdomain
 	notification = Notification.objects.all()
 	if notification and notification[0].send_scan_status_notif:
 		send_notification('Port Scan initiated for {}'.format(domain_name))
@@ -1337,7 +1338,7 @@ def directory_fuzz(
 				proxy
 			)
 
-		command = '{} -u {} -o {} -of json'.format(
+		command = '{} -u {} -o {} -fs 0 -of json'.format(
 			ffuf_command,
 			http_url,
 			dirs_results
