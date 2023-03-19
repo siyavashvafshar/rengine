@@ -591,6 +591,23 @@ def subdomain_scan(
 					process = subprocess.Popen(assetfinder_command.split())
 					process.wait()
 
+				elif tool == 'suffledns':
+					if AMASS_WORDLIST in yaml_configuration[SUBDOMAIN_DISCOVERY]:
+						wordlist = yaml_configuration[SUBDOMAIN_DISCOVERY][AMASS_WORDLIST]
+						if wordlist == 'default':
+							wordlist_path = '/usr/src/wordlist/deepmagic.com-prefixes-top50000.txt'
+						else:
+							wordlist_path = '/usr/src/wordlist/' + wordlist + '.txt'
+							if not os.path.exists(wordlist_path):
+								wordlist_path = '/usr/src/' + AMASS_WORDLIST
+					shuffledns_command = 'shuffledns -d {} -r /usr/src/scan_results/resolvers.txt -w {} -o {}/from_shuffledns.txt'.format(
+						domain.name, wordlist_path, results_dir)
+
+					# Run ShuffleDNS
+					logging.info(shuffledns_command)
+					process = subprocess.Popen(shuffledns_command.split())
+					process.wait()
+
 				elif tool == 'sublist3r':
 					sublist3r_command = 'python3 /usr/src/github/Sublist3r/sublist3r.py -d {} -t {} -o {}/from_sublister.txt'.format(
 						domain.name, threads, results_dir)
