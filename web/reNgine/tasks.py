@@ -591,7 +591,7 @@ def subdomain_scan(
 					process = subprocess.Popen(assetfinder_command.split())
 					process.wait()
 
-				elif tool == 'suffledns':
+				elif tool == 'shuffledns':
 					if AMASS_WORDLIST in yaml_configuration[SUBDOMAIN_DISCOVERY]:
 						wordlist = yaml_configuration[SUBDOMAIN_DISCOVERY][AMASS_WORDLIST]
 						if wordlist == 'default':
