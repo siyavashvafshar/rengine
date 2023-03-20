@@ -592,16 +592,20 @@ def subdomain_scan(
 					process.wait()
 
 				elif tool == 'shuffledns':
+					shuffledns_command = 'shuffledns -d {} -r /usr/src/scan_results/resolvers.txt -o {}/from_shuffledns.txt'.format(
+						domain.name, results_dir)
 					if AMASS_WORDLIST in yaml_configuration[SUBDOMAIN_DISCOVERY]:
 						wordlist = yaml_configuration[SUBDOMAIN_DISCOVERY][AMASS_WORDLIST]
+
 						if wordlist == 'default':
 							wordlist_path = '/usr/src/wordlist/deepmagic.com-prefixes-top50000.txt'
 						else:
-							wordlist_path = '/usr/src/wordlist/' + wordlist + '.txt'
+							wordlist_path = '/usr/src/wordlist/2m.txt'
 							if not os.path.exists(wordlist_path):
 								wordlist_path = '/usr/src/' + AMASS_WORDLIST
-					shuffledns_command = 'shuffledns -d {} -r /usr/src/scan_results/resolvers.txt -w {} -o {}/from_shuffledns.txt'.format(
-						domain.name, wordlist_path, results_dir)
+
+						shuffledns_command = shuffledns_command + \
+										' -w {}'.format(wordlist_path)
 
 					# Run ShuffleDNS
 					logging.info(shuffledns_command)
