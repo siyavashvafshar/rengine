@@ -47,6 +47,14 @@ RUN tar -xvf go1.20.linux-amd64.tar.gz
 RUN rm go1.20.linux-amd64.tar.gz
 RUN mv go /usr/local
 
+# Download and install massdns
+RUN wget https://github.com/blechschmidt/massdns/archive/refs/tags/v1.0.0.tar.gz
+RUN tar -xvf v1.0.0.tar.gz
+RUN rm v1.0.0.tar.gz
+RUN make -C massdns-1.0.0/
+RUN mv massdns-1.0.0/bin/massdns /usr/bin/massdns
+RUN rm -r massdns-1.0.0/
+
 # Download geckodriver
 RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz
 RUN tar -xvf geckodriver-v0.26.0-linux64.tar.gz
@@ -88,6 +96,7 @@ RUN GO111MODULE=on go install -v github.com/projectdiscovery/httpx/cmd/httpx@lat
 RUN GO111MODULE=on go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 RUN GO111MODULE=on go install -v github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
 RUN GO111MODULE=on go install -v github.com/projectdiscovery/naabu/v2/cmd/naabu@latest
+RUN GO111MODULE=on go install -v github.com/projectdiscovery/shuffledns/cmd/shuffledns@latest
 
 
 # Update Nuclei and Nuclei-Templates
