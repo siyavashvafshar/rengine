@@ -523,7 +523,7 @@ def subdomain_scan(
 	# check for all the tools and add them into string
 	# if tool selected is all then make string, no need for loop
 	if ALL in yaml_configuration[SUBDOMAIN_DISCOVERY][USES_TOOLS]:
-		tools = 'amass-active amass-passive assetfinder sublist3r subfinder oneforall'
+		tools = 'amass-active amass-passive assetfinder sublist3r subfinder oneforall shuffledns'
 		# also put all custom subdomain tools
 		custom_tools = ' '.join(tool for tool in custom_subdomain_tools)
 		if custom_tools:
