@@ -592,7 +592,7 @@ def subdomain_scan(
 					process.wait()
 
 				elif tool == 'shuffledns':
-					shuffledns_command = 'shuffledns -d {} -r /usr/src/app/resolvers.txt -o {}/from_shuffledns.txt'.format(
+					shuffledns_command = 'shuffledns -d {} -t 5000 -r /usr/src/app/resolvers.txt -o {}/from_shuffledns.txt'.format(
 						domain.name, results_dir)
 					if SHUFFLEDNS_WORDLIST in yaml_configuration[SUBDOMAIN_DISCOVERY]:
 						wordlist = yaml_configuration[SUBDOMAIN_DISCOVERY][SHUFFLEDNS_WORDLIST]
