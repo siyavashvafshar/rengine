@@ -116,6 +116,20 @@ RUN python3 -m pip install fuzzywuzzy \
     pyvirtualdisplay \
     netaddr
 
+# install dnsvalidator
+RUN git clone https://github.com/vortexau/dnsvalidator.git
+RUN pip3 install -r dnsvalidator/requirements.txt
+RUN python3 dnsvalidator/setup.py install
+RUN rm -r dnsvalidator
+
+# install Cron
+RUN apt-get update
+RUN apt-get -y install cron
+
+# Add the cron job
+RUN crontab -l | { cat; echo "0 0 * * * dnsvalidator -tL https://public-dns.info/nameservers.txt -threads 40 -o /usr/src/app/resolvers.txt"; } | crontab -
+RUN cron
+
 # Copy source code
 COPY . /usr/src/app/
 
