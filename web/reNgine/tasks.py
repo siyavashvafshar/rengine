@@ -1213,7 +1213,105 @@ def check_waf(scan_history, results_dir):
 
 
 
-
+# def vhost_fuzz(scan_history,
+# 		activity_id,
+# 		yaml_configuration,
+# 		results_dir,
+# 		domain=None,
+# 		subdomain=None,
+# 		file_name=None,
+# 		subscan=None):
+# 	output_file_name = file_name if file_name else 'vhost.json'
+# 	dirs_results = results_dir + '/' + output_file_name
+# 
+# 	domain_name = domain.name if domain else subdomain
+# 
+# 	notification = Notification.objects.all()
+# 	if notification and notification[0].send_scan_status_notif:
+# 		send_notification('VHost Bruteforce has been initiated for {}.'.format(domain_name))
+# 
+# 	# get wordlist
+# 	if (WORDLIST not in yaml_configuration[DIR_FILE_FUZZ] or
+# 		not yaml_configuration[DIR_FILE_FUZZ][WORDLIST] or
+# 			'default' in yaml_configuration[DIR_FILE_FUZZ][WORDLIST]):
+# 		wordlist_location = '/usr/src/wordlist/deepmagic.com-prefixes-top50000.txt'
+# 	else:
+# 		wordlist_location = '/usr/src/wordlist/' + \
+# 			yaml_configuration[DIR_FILE_FUZZ][WORDLIST] + '.txt'
+# 
+# 	ffuf_command = 'ffuf -w ' + wordlist_location
+# 
+# 	if domain:
+# 		subdomains_fuzz = Subdomain.objects.filter(
+# 			scan_history__id=scan_history.id).exclude(http_url__isnull=True)
+# 	else:
+# 		subdomains_fuzz = Subdomain.objects.filter(
+# 			name=subdomain).filter(
+# 			scan_history__id=scan_history.id)
+# 
+# 	if THREADS in yaml_configuration[DIR_FILE_FUZZ] \
+# 		and yaml_configuration[DIR_FILE_FUZZ][THREADS] > 0:
+# 		threads = yaml_configuration[DIR_FILE_FUZZ][THREADS]
+# 		ffuf_command = ' {} -t {} '.format(
+# 			ffuf_command,
+# 			threads
+# 		)
+# 	if STOP_ON_ERROR in yaml_configuration[DIR_FILE_FUZZ] \
+# 		and yaml_configuration[DIR_FILE_FUZZ][STOP_ON_ERROR]:
+# 		ffuf_command = '{} -se'.format(
+# 			ffuf_command
+# 		)
+# 
+# 	if FOLLOW_REDIRECT in yaml_configuration[DIR_FILE_FUZZ] \
+# 		and yaml_configuration[DIR_FILE_FUZZ][FOLLOW_REDIRECT]:
+# 		ffuf_command = ' {} -fr '.format(
+# 			ffuf_command
+# 		)
+# 
+# 	if AUTO_CALIBRATION in yaml_configuration[DIR_FILE_FUZZ] \
+# 		and yaml_configuration[DIR_FILE_FUZZ][AUTO_CALIBRATION]:
+# 		ffuf_command = ' {} -ac '.format(
+# 			ffuf_command
+# 		)
+# 
+# 	if TIMEOUT in yaml_configuration[DIR_FILE_FUZZ] \
+# 		and yaml_configuration[DIR_FILE_FUZZ][TIMEOUT] > 0:
+# 		timeout = yaml_configuration[DIR_FILE_FUZZ][TIMEOUT]
+# 		ffuf_command = ' {} -timeout {} '.format(
+# 			ffuf_command,
+# 			timeout
+# 		)
+# 
+# 	if DELAY in yaml_configuration[DIR_FILE_FUZZ] \
+# 		and yaml_configuration[DIR_FILE_FUZZ][DELAY] > 0:
+# 		delay = yaml_configuration[DIR_FILE_FUZZ][DELAY]
+# 		ffuf_command = ' {} -p "{}" '.format(
+# 			ffuf_command,
+# 			delay
+# 		)
+# 
+# 	if MATCH_HTTP_STATUS in yaml_configuration[DIR_FILE_FUZZ]:
+# 		mc = ','.join(str(code) for code in yaml_configuration[DIR_FILE_FUZZ][MATCH_HTTP_STATUS])
+# 	else:
+# 		mc = '200,204'
+# 
+# 	ffuf_command = ' {} -mc {} '.format(
+# 		ffuf_command,
+# 		mc
+# 	)
+# 
+# 	if MAX_TIME in yaml_configuration[DIR_FILE_FUZZ] \
+# 		and yaml_configuration[DIR_FILE_FUZZ][MAX_TIME] > 0:
+# 		max_time = yaml_configuration[DIR_FILE_FUZZ][MAX_TIME]
+# 		ffuf_command = ' {} -maxtime {} '.format(
+# 			ffuf_command,
+# 			max_time
+# 		)
+# 
+# 	if CUSTOM_HEADER in yaml_configuration and yaml_configuration[CUSTOM_HEADER]:
+# 		ffuf_command += ' -H "{}"'.format(yaml_configuration[CUSTOM_HEADER])
+# 
+# 	logger.info(ffuf_command)
 
 def directory_fuzz(
 		scan_history,
@@ -1809,11 +1907,11 @@ def vulnerability_scan(
 
 		vulnerability_scan_input_file = results_dir + urls_path
 
-		nuclei_command = 'nuclei -json -l {} -o {}'.format(
+		nuclei_command = 'nuclei -j -l {} -o {}'.format(
 			vulnerability_scan_input_file, vulnerability_result_path)
 	else:
 		url_to_scan = subdomain.http_url if subdomain.http_url else 'https://' + subdomain.name
-		nuclei_command = 'nuclei -json -u {} -o {}'.format(url_to_scan, vulnerability_result_path)
+		nuclei_command = 'nuclei -j -u {} -o {}'.format(url_to_scan, vulnerability_result_path)
 		domain_id = scan_history.domain.id
 		domain = Domain.objects.get(id=domain_id)
 
