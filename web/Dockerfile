@@ -118,8 +118,9 @@ RUN python3 -m pip install fuzzywuzzy \
 
 # install dnsvalidator
 RUN git clone https://github.com/vortexau/dnsvalidator.git
-RUN pip3 install -r dnsvalidator/requirements.txt
-RUN python3 dnsvalidator/setup.py install
+WORKDIR dnsvalidator
+RUN python3 setup.py install
+WORKDIR /usr/src/app
 RUN rm -r dnsvalidator
 
 # install Cron
